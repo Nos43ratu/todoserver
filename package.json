@@ -1,26 +1,20 @@
 {
   "name": "nateste",
   "version": "1.0.0",
-  "description": "lol kek cheburek",
-  "main": " server.js",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "node server",
-    "server": "nodemon server"
+    "start": "node index.js",
+    "server": "nodemon index.js"
   },
-  "author": "Nurislam kotak",
-  "license": " MIT",
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "config": "^3.2.4",
     "express": "^4.17.1",
     "express-validator": "^6.3.1",
-    "gravatar": "^1.8.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.8.3",
-    "request": "^2.88.0"
-  },
-  "devDependencies": {
-    "concurrently": "^5.0.2",
+    "mongodb": "^3.4.1",
+    "mongoose": "^5.8.4",
     "nodemon": "^2.0.2"
   }
 }
