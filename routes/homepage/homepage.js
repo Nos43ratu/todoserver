@@ -1,42 +1,63 @@
 const express = require("express");
 const router = express.Router();
-const { check, validationResult } = require("express-validator");
-const Signup = require("../../shema/signup");
-router.post(
-  "/",
-  [
-    check("email", "нужно ввести email").isEmail(),
-    check("firstname", "нужно ввести имя")
-      .not()
-      .isEmpty(),
-    check("password", "нужно ввести пароль").isLength({ min: 6 }),
-    check("cook", "вы кто")
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    const { email, firstname, password, cook } = req.body;
+const collum=require('../../shema/collum')
+const task=require('../../shema/tasks')
 
-    try {
-      let poisk = await Signup.findOne({ email });
-      if (poisk) {
-        return res.status(400).json({ errors: [{ msg: "idi nahui" }] });
-      }
-      poisk = new Signup({
-        email,
-        firstname,
-        password,
-        cook
-      });
 
-      await poisk.save();
-      res.send("kotaksos");
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send("Server error");
-    }
-  }
-);
+
+//collums post request
+router.post('/collums',(req,res)=>{
+  const collums = new collum(req.body);
+    collums.save()
+      .then(item => {
+        res.send("collum saved");
+      })
+})
+router.get('/collums',(req,res)=>{
+    collum.find({}, function(err, result) {
+        if (err) {
+            res.send(err);
+        } else {
+            res.send(result);
+        }
+    })})
+router.put('/collums',(req,res)=>{
+
+    collum.findByIdAndUpdate(
+        req.body._id, req.body ,{new: true},(err, todo) => {
+
+            if (err) return res.status(500).send(err);
+            return res.send(todo.collum.items);
+        }
+    )})
+
+
+
+
+//tsks post request
+router.post('/tasks',(req,res)=>{
+    const tasks = new task(req.body);
+    tasks.save()
+        .then(item => {
+            res.send("task saved");
+        })
+})
+router.put('/tasks',(req,res)=>{
+
+    task.findByIdAndUpdate(
+        req.body._id, req.body ,{new: true},(err, todo) => {
+
+            if (err) return res.status(500).send(err);
+            return res.send(todo);
+        }
+    )})
+router.get('/tasks',(req,res)=>{
+    task.find({}, function(err, result) {
+        if (err) {
+            res.send(err);
+        } else {
+            res.send(result);
+        }
+    })})
+
 module.exports = router;

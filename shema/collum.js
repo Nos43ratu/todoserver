@@ -2,19 +2,12 @@ const mongoose = require("mongoose");
 
 
 
-const todosSchema = new mongoose.Schema({
-  tasks: {
-    type: Array,
-    task: {
-      _id: {type: String, required: true},
-      name: String
-    },
-    required: false
-  },
-  collums:{
-    type: Array,
-    required: false
+const collumSchema = new mongoose.Schema({
+  collum:{
+    name:String,
+    items:Array,
+    color:String
   }
 });
 
-module.exports = todos = mongoose.model("todos", todosSchema);
+module.exports = collum = mongoose.model("collum", collumSchema);
