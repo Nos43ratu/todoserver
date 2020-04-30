@@ -1,13 +1,16 @@
 const mongoose = require("mongoose");
-
-
+const collum = require("./collum");
+const Schema = mongoose.Schema;
 
 const taskSchema = new mongoose.Schema({
-    task:{
-        name:String,
-        color:String,
-        status:Boolean
-    }
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "collum",
+  },
+  name: String,
+  color: String,
+  status: Boolean,
+  desk: String,
 });
 
-module.exports = task = mongoose.model("task", taskSchema);
+module.exports = tasks = mongoose.model("tasks", taskSchema);

@@ -7,13 +7,12 @@ const task = require("../../shema/tasks");
 
 //GET request
 router.get("/collums", (req, res) => {
-  collum.find({}, function (err, result) {
-    if (err) {
-      res.send(err);
-    } else {
-      res.send(result);
-    }
-  });
+  collum
+    .find()
+    .populate("tasks")
+    .then(function (prod) {
+      res.send(prod);
+    });
 });
 
 //POST request
@@ -74,7 +73,18 @@ router.get("/tasks", (req, res) => {
 router.post("/tasks", (req, res) => {
   const tasks = new task(req.body);
   tasks.save().then((item) => {
-    res.send("task saved");
+    collum.findById(item.owner).then((column) => {
+      console.log(column);
+      collum.findByIdAndUpdate(
+        column._id,
+        { $push: { tasks: item._id } },
+        { new: true },
+        (err, todo) => {
+          if (err) return res.status(500).send(err);
+          res.send("task changed");
+        }
+      );
+    });
   });
 });
 
