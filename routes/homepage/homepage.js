@@ -56,6 +56,10 @@ router.patch("/collums", (req, res) => {
   res.send("column patched");
 });
 
+//DELETE request
+router.delete("/collums", (req, res) => {
+  collum.deleteOne({ _id: req.body.id }).then(res.send("keks"));
+});
 /*------------------------------------ T A S K ------------------------------------*/
 
 //GET request
@@ -95,5 +99,8 @@ router.put("/tasks", (req, res) => {
     res.send("task changed");
   });
 });
-
+//DELETE request
+router.delete("/tasks", (req, res) => {
+  task.deleteOne({ _id: req.body.id }).then(res.send());
+});
 module.exports = router;
