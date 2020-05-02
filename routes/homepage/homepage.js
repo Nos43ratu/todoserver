@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const collum = require("../../shema/collum");
 const task = require("../../shema/tasks");
+const todo = require("../../shema/todo");
 
 /*------------------------------------ C O L U M N------------------------------------*/
 
@@ -18,8 +19,17 @@ router.get("/collums", (req, res) => {
 //POST request
 router.post("/collums", (req, res) => {
   const collums = new collum(req.body);
-  collums.save();
-  res.send("column saved");
+  collums.save().then((item) => {
+    todo.findByIdAndUpdate(
+      { _id: "5eacd7c11a50ac404cb290d3" },
+      { $push: { collums: item._id } },
+      { new: true },
+      (err, todo) => {
+        if (err) return res.status(500).send(err);
+        res.send("todo changed");
+      }
+    );
+  });
 });
 
 //PUT request
@@ -58,8 +68,19 @@ router.patch("/collums", (req, res) => {
 
 //DELETE request
 router.delete("/collums", (req, res) => {
-  collum.deleteOne({ _id: req.body.id }).then(res.send("keks"));
+  collum.deleteOne({ _id: req.body.id }).then((item) => {
+    todo.findByIdAndUpdate(
+      { _id: "5eacd7c11a50ac404cb290d3" },
+      { $pull: { collums: { $in: [req.body.id] } } },
+      { new: true },
+      (err, todo) => {
+        if (err) return res.status(500).send(err);
+        res.send("todo changed");
+      }
+    );
+  });
 });
+
 /*------------------------------------ T A S K ------------------------------------*/
 
 //GET request
@@ -104,3 +125,28 @@ router.delete("/tasks", (req, res) => {
   task.deleteOne({ _id: req.body.id }).then(res.send());
 });
 module.exports = router;
+
+/*------------------------------------ T O D O ------------------------------------*/
+
+//GET request
+router.get("/todo", (req, res) => {
+  todo
+    .find()
+    .populate({ path: "collums", populate: { path: "tasks" } })
+    .then(function (prod) {
+      res.send(prod);
+    });
+});
+
+//PUT request
+router.put("/todo", (req, res) => {
+  collum.findByIdAndUpdate(
+    req.body._id,
+    req.body,
+    { new: true },
+    (err, todo) => {
+      if (err) return res.status(500).send(err);
+      res.send("column changed");
+    }
+  );
+});
